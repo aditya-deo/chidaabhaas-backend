@@ -14,9 +14,4 @@ router.get("/:pg", async (req, res) => {
   return res.status(200).json(allPoems);
 });
 
-router.get("/:pg/user", async (req, res) => {
-  const allPoems = await ChUser.find({});
-  return res.status(200).json(allPoems);
-});
-
 module.exports = router;
