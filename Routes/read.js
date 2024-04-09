@@ -7,11 +7,34 @@ const { ChUser } = require("../Models/ChUserModel");
 
 router.get("/:pg", async (req, res) => {
   const pgNo = req.params.pg;
-  const allPoems = await ChPoem.find({}).populate({
-    path: "Poet",
-    select: "UserId Username",
-  });
-  return res.status(200).json(allPoems);
+
+  try {
+    const allPoemsWithLikes = await ChPoem.aggregate([
+      {
+        $lookup: {
+          from: "chlikes",
+          localField: "_id",
+          foreignField: "PoemId",
+          as: "likes",
+        },
+      },
+      {
+        $addFields: {
+          NumberOfLikes: { $size: "$likes" },
+        },
+      },
+      {
+        $unset: "likes",
+      },
+      {
+        $sort: { CreatedDate: -1 },
+      },
+    ]);
+    return res.status(200).json(allPoemsWithLikes);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Server Error" });
+  }
 });
 
 module.exports = router;

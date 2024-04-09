@@ -31,6 +31,11 @@ const ChPoemModelSchema = new mongoose.Schema({
     required: true,
     default: Date.now,
   },
+  NumberOfLikes: {
+    type: Number,
+    required: false,
+    default: 0,
+  },
 });
 const ChPoem = mongoose.model("ChPoem", ChPoemModelSchema);
 
